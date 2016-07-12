@@ -11,7 +11,13 @@ mainWindow::mainWindow(QWidget *parent) :
 
     _presets->setRowCount(128);
     _presets->setColumnCount(1);
-//    _presets->setHorizontalHeaderLabels(c_str('Preset'));
+
+    for(int i=0; i<_presets->rowCount(); i++){
+        QString defaultCelString = QString("Preset #%1").arg(i+1);
+        QTableWidgetItem *celContent = new QTableWidgetItem(defaultCelString);
+        _presets->setItem(i, 0, celContent);
+    }
+
     _presets->horizontalHeader()->setVisible(false);
 
     QStringList settingsList;
