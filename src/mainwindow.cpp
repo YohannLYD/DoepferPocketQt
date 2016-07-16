@@ -6,8 +6,14 @@
 mainWindow::mainWindow(QWidget *parent) :
     QMainWindow(parent),
     _presetsTable(new QTableWidget),
-    _presetSettingsTable(new QTableWidget)
+    _presetSettingsTable(new QTableWidget),
+    _midiIn(new QMidiIn),
+    _midiOut(new QMidiOut),
+    _midiMessage(new QMidiMessage)
 {
+    //_midiIn->openPort(NULL);
+    //_midiOut->openPort(NULL);
+
     QWidget *mainWidget = new QWidget(this);
     QHBoxLayout *mainLayout = new QHBoxLayout(mainWidget);
 
