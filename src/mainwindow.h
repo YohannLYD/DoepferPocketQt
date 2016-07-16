@@ -31,6 +31,7 @@ public:
     mainWindow(QWidget *parent = 0);
     QTableWidget* _presetsTable;
     QTableWidget* _presetSettingsTable;
+    QMenuBar* _menuBar;
 
     ~mainWindow();
 

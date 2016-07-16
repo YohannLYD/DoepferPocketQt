@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <vector>
 #include <QDebug>
 
@@ -7,6 +8,7 @@ mainWindow::mainWindow(QWidget *parent) :
     QMainWindow(parent),
     _presetsTable(new QTableWidget),
     _presetSettingsTable(new QTableWidget),
+    _menuBar(new QMenuBar),
     _midiIn(new QMidiIn),
     _midiOut(new QMidiOut),
     _midiMessage(new QMidiMessage)
@@ -14,8 +16,25 @@ mainWindow::mainWindow(QWidget *parent) :
     //_midiIn->openPort(NULL);
     //_midiOut->openPort(NULL);
 
+
+    // Layout
+
     QWidget *mainWidget = new QWidget(this);
     QHBoxLayout *mainLayout = new QHBoxLayout(mainWidget);
+
+
+    // Menu Bar
+
+    QMenu* menu1 = new QMenu("File", _menuBar);
+    menu1->addAction("Settings");
+    menu1->addSeparator();
+    menu1->addMenu("Send");
+    menu1->addMenu("Receive");
+
+    _menuBar->addMenu(menu1);
+    mainLayout->addWidget(_menuBar);
+
+    // Table
 
     _presetsTable->setRowCount(128);
     _presetsTable->setColumnCount(1);
@@ -40,6 +59,7 @@ mainWindow::mainWindow(QWidget *parent) :
 
     mainWidget->setLayout(mainLayout);
     setCentralWidget(mainWidget);
+
 
     connect(_midiIn, SIGNAL(midiMessageReceived(QMidiMessage*)), this, SLOT(onMidiMessageReceive(QMidiMessage*)));
 
