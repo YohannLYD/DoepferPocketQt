@@ -65,6 +65,7 @@ mainWindow::mainWindow(QWidget *parent) :
 
 
     connect(_midiIn, SIGNAL(midiMessageReceived(QMidiMessage*)), this, SLOT(onMidiMessageReceive(QMidiMessage*)));
+    connect(settings, SIGNAL(triggered(bool)), this, SLOT(openSettingsWindow()));
 
 }
 
@@ -99,4 +100,8 @@ void mainWindow::onMidiMessageReceive(QMidiMessage *message)
     }
 
     //qDebug() << "BYTE #7 : " << rawMessage.at(6) ; // DEBUG
+}
+
+void mainWindow::openSettingsWindow(){
+    qDebug() << "Open settings window here" ;
 }
