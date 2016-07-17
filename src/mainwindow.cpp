@@ -20,18 +20,19 @@ mainWindow::mainWindow(QWidget *parent) :
     // Layout
 
     QWidget *mainWidget = new QWidget(this);
-    QHBoxLayout *mainLayout = new QHBoxLayout(mainWidget);
-
+    QVBoxLayout *mainLayout = new QVBoxLayout(mainWidget);
+    QHBoxLayout *tableLayout = new QHBoxLayout;
 
     // Menu Bar
 
-    QMenu* menu1 = new QMenu("File", _menuBar);
-    menu1->addAction("Settings");
-    menu1->addSeparator();
-    menu1->addMenu("Send");
-    menu1->addMenu("Receive");
+    QMenu* mainMenu = new QMenu("File", _menuBar);
+    QAction* settings = mainMenu->addAction("Settings");
+    mainMenu->addSeparator();
+    QMenu* send = mainMenu->addMenu("Send");
+    QAction* sendSingle = send->addAction("Send this preset");
+    QAction* sendAll = send->addAction("Send all presets");
 
-    _menuBar->addMenu(menu1);
+    _menuBar->addMenu(mainMenu);
     mainLayout->addWidget(_menuBar);
 
     // Table
@@ -54,8 +55,10 @@ mainWindow::mainWindow(QWidget *parent) :
     _presetSettingsTable->setHorizontalHeaderLabels(settingsList);
 
 
-    mainLayout->addWidget(_presetsTable);
-    mainLayout->addWidget(_presetSettingsTable);
+    tableLayout->addWidget(_presetsTable);
+    tableLayout->addWidget(_presetSettingsTable);
+
+    mainLayout->addLayout(tableLayout);
 
     mainWidget->setLayout(mainLayout);
     setCentralWidget(mainWidget);
