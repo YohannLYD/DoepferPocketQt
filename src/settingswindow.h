@@ -4,6 +4,9 @@
 #include <QWidget>
 #include <QMainWindow>
 #include <QComboBox>
+#include <QGroupBox>;
+#include <QCheckBox>
+#include <QSpinBox>
 
 #include "qmidimessage.h"
 #include "qmidiin.h"
@@ -19,6 +22,12 @@ public:
 
     QComboBox *_inPortComboBox;
     QComboBox *_outPortComboBox;
+
+    QCheckBox *_channelThruCheckBox;
+    QCheckBox *_sysexThruCheckBox;
+    QCheckBox *_realtimeThruCheckBox;
+    QSpinBox *_masterChannelSpinBox;
+
 private:
     QMidiIn *_midiIn;
     QMidiOut *_midiOut;

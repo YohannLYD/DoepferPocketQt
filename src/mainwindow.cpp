@@ -10,9 +10,9 @@ mainWindow::mainWindow(QWidget *parent) :
     _presetsTable(new QTableWidget),
     _presetSettingsTable(new QTableWidget),
     _menuBar(new QMenuBar),
-    _midiIn(new QMidiIn),
-    _midiOut(new QMidiOut),
-    _midiMessage(new QMidiMessage)
+    _midiMessage(new QMidiMessage),
+    _midiIn(new QMidiIn(this)),
+    _midiOut(new QMidiOut(this))
 {
     //_midiIn->openPort(NULL);
     //_midiOut->openPort(NULL);
@@ -74,6 +74,8 @@ mainWindow::~mainWindow()
 
 }
 
+// SLOTS
+
 void mainWindow::onMidiMessageReceive(QMidiMessage *message)
 {
     std::vector<unsigned char> rawMessage = message->getRawMessage();
@@ -102,9 +104,24 @@ void mainWindow::onMidiMessageReceive(QMidiMessage *message)
     //qDebug() << "BYTE #7 : " << rawMessage.at(6) ; // DEBUG
 }
 
-void mainWindow::openSettingsWindow(){
+void mainWindow::openSettingsWindow()
+{
     qDebug() << "Open settings window here" ;
     _settingsWindow->setWindowModality(Qt::ApplicationModal);
     _settingsWindow->show();
 
 }
+
+void mainWindow::openMidiOutPort(unsigned int port)
+{
+    if(_midiOut->isPortOpen()) _midiOut->closePort();
+    _midiOut->openPort(port);
+}
+
+void mainWindow::openMidiInPort(unsigned int port)
+{
+    if(_midiIn->isPortOpen()) _midiIn->closePort();
+
+    _midiIn->openPort(port);
+}
+
