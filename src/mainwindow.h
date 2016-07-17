@@ -8,6 +8,7 @@
 #include <vector>
 #include <bitset>
 
+#include "settingswindow.h"
 #include "qmidimessage.h"
 #include "qmidiin.h"
 #include "qmidiout.h"
@@ -29,6 +30,8 @@ class mainWindow : public QMainWindow
     Q_OBJECT
 public:
     mainWindow(QWidget *parent = 0);
+
+    settingsWindow* _settingsWindow;
     QTableWidget* _presetsTable;
     QTableWidget* _presetSettingsTable;
     QMenuBar* _menuBar;

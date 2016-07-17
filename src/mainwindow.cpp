@@ -6,6 +6,7 @@
 
 mainWindow::mainWindow(QWidget *parent) :
     QMainWindow(parent),
+    _settingsWindow(new settingsWindow(this)),
     _presetsTable(new QTableWidget),
     _presetSettingsTable(new QTableWidget),
     _menuBar(new QMenuBar),
@@ -15,7 +16,6 @@ mainWindow::mainWindow(QWidget *parent) :
 {
     //_midiIn->openPort(NULL);
     //_midiOut->openPort(NULL);
-
 
     // Layout
 
@@ -104,4 +104,7 @@ void mainWindow::onMidiMessageReceive(QMidiMessage *message)
 
 void mainWindow::openSettingsWindow(){
     qDebug() << "Open settings window here" ;
+    _settingsWindow->setWindowModality(Qt::ApplicationModal);
+    _settingsWindow->show();
+
 }

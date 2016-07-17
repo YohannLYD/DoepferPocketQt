@@ -8,9 +8,11 @@ TEMPLATE = app
 
 SOURCES += \
     src/main.cpp \
-    src/mainwindow.cpp
+    src/mainwindow.cpp \
+    src/settingswindow.cpp
 
 include($$PWD/libs/QMidi/QMidi.pri)
 
 HEADERS += \
-    src/mainwindow.h
+    src/mainwindow.h \
+    src/settingswindow.h
