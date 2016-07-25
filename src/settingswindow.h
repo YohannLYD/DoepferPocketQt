@@ -7,6 +7,7 @@
 #include <QGroupBox>;
 #include <QCheckBox>
 #include <QSpinBox>
+#include <bitset>;
 
 #include "qmidimessage.h"
 #include "qmidiin.h"
@@ -26,6 +27,7 @@ public:
     QCheckBox *_channelThruCheckBox;
     QCheckBox *_sysexThruCheckBox;
     QCheckBox *_realtimeThruCheckBox;
+    std::bitset<3> *_thruBitset;
     QSpinBox *_masterChannelSpinBox;
 
 private:
@@ -35,6 +37,7 @@ private:
 signals:
 
 public slots:
+    void onThruCheckboxChange();
 };
 
 #endif // SETTINGSWINDOW_H

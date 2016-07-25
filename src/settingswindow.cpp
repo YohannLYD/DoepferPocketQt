@@ -17,7 +17,8 @@ settingsWindow::settingsWindow(QWidget *parent) :
     _channelThruCheckBox(new QCheckBox(this)),
     _sysexThruCheckBox(new QCheckBox(this)),
     _realtimeThruCheckBox(new QCheckBox(this)),
-    _masterChannelSpinBox(new QSpinBox(this))
+    _masterChannelSpinBox(new QSpinBox(this)),
+    _thruBitset(new std::bitset<3> )
 {
     this->setWindowTitle("Configuration");
 
@@ -39,7 +40,8 @@ settingsWindow::settingsWindow(QWidget *parent) :
     _channelThruCheckBox->setText("Channel Events Thru (BIT0)");
     _sysexThruCheckBox->setText("Sysex Events Thru (BIT1)");
     _realtimeThruCheckBox->setText("Realtim Events Thru (BIT2)");
-
+    _masterChannelSpinBox->setMinimum(1);
+    _masterChannelSpinBox->setMaximum(16);
     _masterChannelSpinBox->setValue(1);
 
     QPushButton *getConfigButton = new QPushButton;
@@ -67,7 +69,14 @@ settingsWindow::settingsWindow(QWidget *parent) :
     mainWidget->setLayout(mainLayout);
     setCentralWidget(mainWidget);
 
+    connect(_channelThruCheckBox,SIGNAL(toggled(bool)),this,SLOT(onThruCheckboxChange()));
+    connect(_sysexThruCheckBox,SIGNAL(toggled(bool)),this,SLOT(onThruCheckboxChange()));
+    connect(_realtimeThruCheckBox,SIGNAL(toggled(bool)),this,SLOT(onThruCheckboxChange()));
+}
 
-
-
+void settingsWindow::onThruCheckboxChange(){
+    _thruBitset->set(0, _channelThruCheckBox->isChecked());
+    _thruBitset->set(1, _sysexThruCheckBox->isChecked());
+    _thruBitset->set(2,_realtimeThruCheckBox->isChecked());
+    qDebug()<< "_thruBitset = " <<_thruBitset->to_ulong();
 }
