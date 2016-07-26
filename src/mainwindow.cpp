@@ -109,19 +109,17 @@ void mainWindow::openSettingsWindow()
     qDebug() << "Open settings window here" ;
     _settingsWindow->setWindowModality(Qt::ApplicationModal);
     _settingsWindow->show();
-
 }
 
-void mainWindow::openMidiOutPort(unsigned int port)
-{
-    if(_midiOut->isPortOpen()) _midiOut->closePort();
-    _midiOut->openPort(port);
+void mainWindow::openMidiPorts(){
+    _midiIn->closePort();
+    _midiOut->closePort();
+    if(_settingsWindow->_inPortComboBox->currentText() != "None"){
+        qDebug()<< "Selected MIDI IN : " <<_settingsWindow->_inPortComboBox->currentText();
+        _midiIn->openPort(_settingsWindow->_inPortComboBox->currentIndex());
+    }
+    if(_settingsWindow->_outPortComboBox->currentText() != "None"){
+        qDebug()<< "Selected MIDI OUT : " <<_settingsWindow->_inPortComboBox->currentText();
+        _midiOut->openPort(_settingsWindow->_outPortComboBox->currentIndex());
+    }
 }
-
-void mainWindow::openMidiInPort(unsigned int port)
-{
-    if(_midiIn->isPortOpen()) _midiIn->closePort();
-
-    _midiIn->openPort(port);
-}
-

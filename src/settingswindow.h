@@ -4,10 +4,10 @@
 #include <QWidget>
 #include <QMainWindow>
 #include <QComboBox>
-#include <QGroupBox>;
+#include <QGroupBox>
 #include <QCheckBox>
 #include <QSpinBox>
-#include <bitset>;
+#include <bitset>
 
 #include "qmidimessage.h"
 #include "qmidiin.h"
@@ -18,6 +18,8 @@ class settingsWindow : public QMainWindow
     Q_OBJECT
 public:
     explicit settingsWindow(QWidget *parent = 0);
+
+    ~settingsWindow();
 
     QMidiMessage* _midiMessage;
 

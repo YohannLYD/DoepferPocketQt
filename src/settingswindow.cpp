@@ -29,7 +29,12 @@ settingsWindow::settingsWindow(QWidget *parent) :
     qDebug()<<"outputs"<<_midiOut->getPorts();
 
     _inPortComboBox->addItems(_midiIn->getPorts());
+    _inPortComboBox->addItem("None");
     _outPortComboBox->addItems(_midiOut->getPorts());
+    _outPortComboBox->addItem("None");
+
+    emit _inPortComboBox->setCurrentIndex(_inPortComboBox->count()-1);
+    emit _outPortComboBox->setCurrentIndex(_outPortComboBox->count()-1);
 
 
     QPushButton *bouton = new QPushButton();
@@ -72,6 +77,11 @@ settingsWindow::settingsWindow(QWidget *parent) :
     connect(_channelThruCheckBox,SIGNAL(toggled(bool)),this,SLOT(onThruCheckboxChange()));
     connect(_sysexThruCheckBox,SIGNAL(toggled(bool)),this,SLOT(onThruCheckboxChange()));
     connect(_realtimeThruCheckBox,SIGNAL(toggled(bool)),this,SLOT(onThruCheckboxChange()));
+    connect(bouton, SIGNAL(clicked(bool)),parent, SLOT(openMidiPorts()));
+}
+
+settingsWindow::~settingsWindow()
+{
 }
 
 void settingsWindow::onThruCheckboxChange(){
