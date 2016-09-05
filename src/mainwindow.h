@@ -24,7 +24,6 @@ enum deviceCommandByte {
     VERSION_ANS            = 0x00,
 };
 
-
 class mainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -38,6 +37,7 @@ public:
 
     ~mainWindow();
 
+    std::vector<unsigned char> _prefixPocketC;
     QMidiMessage* _midiMessage;
     deviceCommandByte _deviceCommandByte;
 
@@ -60,8 +60,10 @@ public slots:
     void openSettingsWindow();
     //void updateDeviceConfig(std::bitset<3> thru, int mastChn);
     //void updatePresetSettings(std::vector<unsigned int>* presetSettings);
+    void infoPopup();
 private slots:
     void openMidiPorts();
+    void sendThruMasterChnRequest();
 
 
 };

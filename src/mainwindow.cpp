@@ -14,9 +14,8 @@ mainWindow::mainWindow(QWidget *parent) :
     _midiIn(new QMidiIn(this)),
     _midiOut(new QMidiOut(this))
 {
-    //_midiIn->openPort(NULL);
-    //_midiOut->openPort(NULL);
-
+    _prefixPocketC =  {0xF0,0x00,0x20,0x20,0x14,0x00};
+    _midiIn->setIgnoreTypes(false, false, false);
     // Layout
 
     QWidget *mainWidget = new QWidget(this);
@@ -87,6 +86,7 @@ void mainWindow::onMidiMessageReceive(QMidiMessage *message)
         {
             case THRU_MC_DUMP:
             {
+                _settingsWindow->updateConfig(message);
                 break;
             }
 
@@ -106,7 +106,6 @@ void mainWindow::onMidiMessageReceive(QMidiMessage *message)
 
 void mainWindow::openSettingsWindow()
 {
-    qDebug() << "Open settings window here" ;
     _settingsWindow->setWindowModality(Qt::ApplicationModal);
     _settingsWindow->show();
 }
@@ -119,7 +118,17 @@ void mainWindow::openMidiPorts(){
         _midiIn->openPort(_settingsWindow->_inPortComboBox->currentIndex());
     }
     if(_settingsWindow->_outPortComboBox->currentText() != "None"){
-        qDebug()<< "Selected MIDI OUT : " <<_settingsWindow->_inPortComboBox->currentText();
+        qDebug()<< "Selected MIDI OUT : " <<_settingsWindow->_outPortComboBox->currentText();
         _midiOut->openPort(_settingsWindow->_outPortComboBox->currentIndex());
     }
+}
+
+void mainWindow::sendThruMasterChnRequest(){
+    std::vector<unsigned char> rawRequest;
+    rawRequest = _prefixPocketC;
+    rawRequest.push_back(0x56);
+    rawRequest.push_back(0x00);
+    rawRequest.push_back(0x00);
+    rawRequest.push_back(0xF7);
+    if(_midiOut->isPortOpen()) _midiOut->sendRawMessage(rawRequest);
 }

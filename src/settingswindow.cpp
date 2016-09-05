@@ -5,6 +5,7 @@
 #include <QGroupBox>
 #include <QCheckBox>
 #include <QSpinBox>
+#include <QMessageBox.h>
 #include <QLabel>
 #include <bitset>
 settingsWindow::settingsWindow(QWidget *parent) :
@@ -37,8 +38,10 @@ settingsWindow::settingsWindow(QWidget *parent) :
     emit _outPortComboBox->setCurrentIndex(_outPortComboBox->count()-1);
 
 
-    QPushButton *bouton = new QPushButton();
-    bouton->setText("Apply");
+    QPushButton *applyBouton = new QPushButton();
+    applyBouton->setText("Apply");
+    connect(applyBouton, SIGNAL(clicked(bool)), parent, SLOT(openMidiPorts()));
+
 
     // THRU MASTER CHANNEL
     QGroupBox *thruChnBox = new QGroupBox("Thru Settings");
@@ -54,6 +57,8 @@ settingsWindow::settingsWindow(QWidget *parent) :
     QPushButton *setConfigButton = new QPushButton;
     setConfigButton->setText("Set configuration");
 
+    connect(getConfigButton, SIGNAL(clicked(bool)),parent,SLOT(sendThruMasterChnRequest()));
+
     QVBoxLayout *vbox = new QVBoxLayout;
     vbox->addWidget(_channelThruCheckBox);
     vbox->addWidget(_sysexThruCheckBox);
@@ -68,7 +73,7 @@ settingsWindow::settingsWindow(QWidget *parent) :
     mainLayout->addWidget(_inPortComboBox);
     mainLayout->addWidget(new QLabel("Midi OUT"));
     mainLayout->addWidget(_outPortComboBox);
-    mainLayout->addWidget(bouton);
+    mainLayout->addWidget(applyBouton);
     mainLayout->addWidget(thruChnBox);
 
     mainWidget->setLayout(mainLayout);
@@ -77,7 +82,8 @@ settingsWindow::settingsWindow(QWidget *parent) :
     connect(_channelThruCheckBox,SIGNAL(toggled(bool)),this,SLOT(onThruCheckboxChange()));
     connect(_sysexThruCheckBox,SIGNAL(toggled(bool)),this,SLOT(onThruCheckboxChange()));
     connect(_realtimeThruCheckBox,SIGNAL(toggled(bool)),this,SLOT(onThruCheckboxChange()));
-    connect(bouton, SIGNAL(clicked(bool)),parent, SLOT(openMidiPorts()));
+
+
 }
 
 settingsWindow::~settingsWindow()
@@ -88,5 +94,19 @@ void settingsWindow::onThruCheckboxChange(){
     _thruBitset->set(0, _channelThruCheckBox->isChecked());
     _thruBitset->set(1, _sysexThruCheckBox->isChecked());
     _thruBitset->set(2,_realtimeThruCheckBox->isChecked());
-    qDebug()<< "_thruBitset = " <<_thruBitset->to_ulong();
+}
+
+void settingsWindow::updateConfig(QMidiMessage* message){
+    int mc  = message->getRawMessage().at(8)+1;
+    _masterChannelSpinBox->setValue(mc);
+
+    std::bitset<3> thruVal (message->getRawMessage().at(7));
+    _channelThruCheckBox->setChecked(thruVal.test(0));
+    _sysexThruCheckBox->setChecked(thruVal.test(1));
+    _realtimeThruCheckBox->setChecked(thruVal.test(2));
+}
+
+void settingsWindow::onSetConfig(){
+
+
 }
