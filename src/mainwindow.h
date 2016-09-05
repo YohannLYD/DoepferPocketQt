@@ -60,7 +60,6 @@ public slots:
     void openSettingsWindow();
     //void updateDeviceConfig(std::bitset<3> thru, int mastChn);
     //void updatePresetSettings(std::vector<unsigned int>* presetSettings);
-    void infoPopup();
 private slots:
     void openMidiPorts();
     void sendThruMasterChnRequest();
