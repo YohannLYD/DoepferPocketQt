@@ -7,7 +7,7 @@
 mainWindow::mainWindow(QWidget *parent) :
     QMainWindow(parent),
     _settingsWindow(new settingsWindow(this)),
-    _presetsTable(new QTableWidget),
+    _presetsList(new QListWidget),
     _presetSettingsTable(new QTableWidget),
     _menuBar(new QMenuBar),
     _midiMessage(new QMidiMessage),
@@ -35,17 +35,10 @@ mainWindow::mainWindow(QWidget *parent) :
     mainLayout->addWidget(_menuBar);
 
     // Table
-
-    _presetsTable->setRowCount(128);
-    _presetsTable->setColumnCount(1);
-
-    for(int i=0; i<_presetsTable->rowCount(); i++){
+    for(int i=0; i<128; i++){
         QString defaultCelString = QString("Preset #%1").arg(i+1);
-        QTableWidgetItem *celContent = new QTableWidgetItem(defaultCelString);
-        _presetsTable->setItem(i, 0, celContent);
+        _presetsList->addItem(defaultCelString);
     }
-
-    _presetsTable->horizontalHeader()->setVisible(false);
 
     QStringList settingsList;
     settingsList << "Channel" << "Description"<< "Type" << "Parameter";
@@ -54,7 +47,7 @@ mainWindow::mainWindow(QWidget *parent) :
     _presetSettingsTable->setHorizontalHeaderLabels(settingsList);
 
 
-    tableLayout->addWidget(_presetsTable);
+    tableLayout->addWidget(_presetsList);
     tableLayout->addWidget(_presetSettingsTable);
 
     mainLayout->addLayout(tableLayout);
