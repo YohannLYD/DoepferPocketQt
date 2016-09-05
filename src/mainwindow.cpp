@@ -110,6 +110,23 @@ void mainWindow::openSettingsWindow()
     _settingsWindow->show();
 }
 
+void mainWindow::updateDeviceConfig(){
+    if(!_midiOut->isPortOpen()) return;
+
+    std::bitset<3> *thru = _settingsWindow->_thruBitset;
+    int mastChn = _settingsWindow->_masterChannelSpinBox->value() - 1;
+
+    std::vector<unsigned char> rawRequest;
+    rawRequest = _prefixPocketC;
+    rawRequest.push_back(0x50);
+    rawRequest.push_back(thru->to_ulong());
+    rawRequest.push_back(mastChn);
+    rawRequest.push_back(0xF7);
+
+    _midiOut->sendRawMessage(rawRequest);
+
+}
+
 void mainWindow::openMidiPorts(){
     _midiIn->closePort();
     _midiOut->closePort();

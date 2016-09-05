@@ -41,7 +41,6 @@ signals:
 public slots:
     void onThruCheckboxChange();
     void updateConfig(QMidiMessage* message);
-    void onSetConfig();
 };
 
 #endif // SETTINGSWINDOW_H

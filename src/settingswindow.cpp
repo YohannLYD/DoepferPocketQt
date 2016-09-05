@@ -58,6 +58,7 @@ settingsWindow::settingsWindow(QWidget *parent) :
     setConfigButton->setText("Set configuration");
 
     connect(getConfigButton, SIGNAL(clicked(bool)),parent,SLOT(sendThruMasterChnRequest()));
+    connect(setConfigButton, SIGNAL(clicked(bool)),parent, SLOT(updateDeviceConfig()));
 
     QVBoxLayout *vbox = new QVBoxLayout;
     vbox->addWidget(_channelThruCheckBox);
@@ -104,9 +105,4 @@ void settingsWindow::updateConfig(QMidiMessage* message){
     _channelThruCheckBox->setChecked(thruVal.test(0));
     _sysexThruCheckBox->setChecked(thruVal.test(1));
     _realtimeThruCheckBox->setChecked(thruVal.test(2));
-}
-
-void settingsWindow::onSetConfig(){
-
-
 }

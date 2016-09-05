@@ -58,7 +58,7 @@ signals:
 public slots:
     void onMidiMessageReceive(QMidiMessage* message);
     void openSettingsWindow();
-    //void updateDeviceConfig(std::bitset<3> thru, int mastChn);
+    void updateDeviceConfig();
     //void updatePresetSettings(std::vector<unsigned int>* presetSettings);
 private slots:
     void openMidiPorts();
