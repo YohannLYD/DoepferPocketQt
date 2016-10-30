@@ -17,6 +17,13 @@ mainWindow::mainWindow(QWidget *parent) :
 {
     _prefixPocketC =  {0xF0,0x00,0x20,0x20,0x14,0x00};
     _midiIn->setIgnoreTypes(false, false, false);
+
+    for(int i=0; i<128; i++){
+        for(int j=0; j<48; j++){
+            _preset[i][j] = i+j;
+        }
+    }
+
     // Layout
 
     QWidget *mainWidget = new QWidget(this);
@@ -54,6 +61,8 @@ mainWindow::mainWindow(QWidget *parent) :
         QString defaultCelString = QString("Preset #%1").arg(i+1);
         _presetsList->addItem(defaultCelString);
     }
+
+    connect(_presetsList,SIGNAL(itemSelectionChanged()),this,SLOT(updateTable()));
 
     QStringList settingsList;
     settingsList << "Channel" << "Description"<< "Type" << "Parameter";
@@ -142,6 +151,18 @@ void mainWindow::updatePreset(QMidiMessage *message)
     int presetNum = message->getRawMessage().at(7);
     for(int i=0; i<48; i++){
         _preset[presetNum][i] = message->getRawMessage().at(9+i);
+    }
+}
+
+void mainWindow::updateTable()
+{
+    // ROWS
+    for(int i=0; i<16; i++){
+        //COLS
+        for(int j=0; j<3; j++){
+            QString value = QString::number(_preset[_presetsList->currentRow()][i+16*j]);
+            _presetSettingsTable->setItem(i,j,new QTableWidgetItem(value));
+        }
     }
 }
 

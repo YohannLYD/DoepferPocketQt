@@ -58,6 +58,7 @@ public slots:
     void openSettingsWindow();
     void updateDeviceConfig();
     void updatePreset(QMidiMessage* message);
+    void updateTable();
 
 private slots:
     void openMidiPorts();
