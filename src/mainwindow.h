@@ -41,6 +41,8 @@ public:
     QMidiMessage* _midiMessage;
     deviceCommandByte _deviceCommandByte;
 
+    unsigned char _preset[128][48];
+
     std::vector<unsigned int> _presetSettings;
 
 private:
@@ -57,7 +59,8 @@ public slots:
     void onMidiMessageReceive(QMidiMessage* message);
     void openSettingsWindow();
     void updateDeviceConfig();
-    //void updatePresetSettings(std::vector<unsigned int>* presetSettings);
+    void updatePreset(QMidiMessage* message);
+
 private slots:
     void openMidiPorts();
     void sendThruMasterChnRequest();

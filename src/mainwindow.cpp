@@ -100,6 +100,7 @@ void mainWindow::onMidiMessageReceive(QMidiMessage *message)
 
             case SINGLE_DUMP:
             {
+                this->updatePreset(message);
                 break;
             }
             case VERSION_ANS:
@@ -118,7 +119,8 @@ void mainWindow::openSettingsWindow()
     _settingsWindow->show();
 }
 
-void mainWindow::updateDeviceConfig(){
+void mainWindow::updateDeviceConfig()
+{
     if(!_midiOut->isPortOpen()) return;
 
     std::bitset<3> *thru = _settingsWindow->_thruBitset;
@@ -133,6 +135,14 @@ void mainWindow::updateDeviceConfig(){
 
     _midiOut->sendRawMessage(rawRequest);
 
+}
+
+void mainWindow::updatePreset(QMidiMessage *message)
+{
+    int presetNum = message->getRawMessage().at(7);
+    for(int i=0; i<48; i++){
+        _preset[presetNum][i] = message->getRawMessage().at(9+i);
+    }
 }
 
 void mainWindow::openMidiPorts(){
