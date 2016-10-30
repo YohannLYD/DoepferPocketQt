@@ -41,8 +41,6 @@ public:
     QMidiMessage* _midiMessage;
     deviceCommandByte _deviceCommandByte;
 
-    int _currentPreset;
-    int _masterChannel;
     std::vector<unsigned int> _presetSettings;
 
 private:
