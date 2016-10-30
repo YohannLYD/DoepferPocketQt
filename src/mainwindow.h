@@ -43,8 +43,6 @@ public:
 
     unsigned char _preset[128][48];
 
-    std::vector<unsigned int> _presetSettings;
-
 private:
     QMidiIn *_midiIn;
     QMidiOut *_midiOut;
