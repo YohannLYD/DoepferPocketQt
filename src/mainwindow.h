@@ -63,7 +63,8 @@ public slots:
 private slots:
     void openMidiPorts();
     void sendThruMasterChnRequest();
-
+    void sendSingleDumpRequest();
+    void sendAllDumpRequest();
 
 };
 

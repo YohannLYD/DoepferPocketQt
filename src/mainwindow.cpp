@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QPushButton>
 #include <vector>
 #include <QDebug>
 
@@ -27,12 +28,26 @@ mainWindow::mainWindow(QWidget *parent) :
     QMenu* mainMenu = new QMenu("File", _menuBar);
     QAction* settings = mainMenu->addAction("Settings");
     mainMenu->addSeparator();
+
+    QMenu* get = mainMenu->addMenu("Get");
+    QAction* getSingle = get->addAction("Get this preset");
+    connect(getSingle,SIGNAL(triggered(bool)),this,SLOT(sendSingleDumpRequest()));
+
+    QAction* getAll = get->addAction("Get all presets");
+    connect(getAll,SIGNAL(triggered(bool)),this,SLOT(sendAllDumpRequest()));
+
     QMenu* send = mainMenu->addMenu("Send");
     QAction* sendSingle = send->addAction("Send this preset");
     QAction* sendAll = send->addAction("Send all presets");
 
     _menuBar->addMenu(mainMenu);
     mainLayout->addWidget(_menuBar);
+
+    QPushButton *getPresetButton = new QPushButton;
+    getPresetButton->setText("Get preset");
+    mainLayout->addWidget(getPresetButton);
+    connect(getPresetButton, SIGNAL(clicked(bool)),this,SLOT(sendSingleDumpRequest()));
+
 
     // Table
     for(int i=0; i<128; i++){
@@ -141,4 +156,23 @@ void mainWindow::sendThruMasterChnRequest(){
     rawRequest.push_back(0x00);
     rawRequest.push_back(0xF7);
     if(_midiOut->isPortOpen()) _midiOut->sendRawMessage(rawRequest);
+}
+
+void mainWindow::sendSingleDumpRequest(){
+    std::vector<unsigned char> rawRequest;
+    rawRequest = _prefixPocketC;
+    rawRequest.push_back(0x26);
+    rawRequest.push_back(_presetsList->currentRow());
+    rawRequest.push_back(0x00);
+    rawRequest.push_back(0xF7);
+    if(_midiOut->isPortOpen()) _midiOut->sendRawMessage(rawRequest);
+}
+
+void mainWindow::sendAllDumpRequest(){
+    _presetsList->setCurrentRow(0);
+    for(int i=0; i<_presetsList->count(); i++){
+        _presetsList->setCurrentRow(i);
+        sendSingleDumpRequest();
+    }
+
 }
