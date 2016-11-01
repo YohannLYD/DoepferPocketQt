@@ -65,6 +65,7 @@ private slots:
     void sendThruMasterChnRequest();
     void sendSingleDumpRequest();
     void sendAllDumpRequest();
+    void sendSingleDump();
 
 };
 

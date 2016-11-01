@@ -48,6 +48,8 @@ mainWindow::mainWindow(QWidget *parent) :
 
     QMenu* send = mainMenu->addMenu("Send");
     QAction* sendSingle = send->addAction("Send this preset");
+    connect(sendSingle,SIGNAL(triggered(bool)),this,SLOT(sendSingleDump()));
+
     QAction* sendAll = send->addAction("Send all presets");
 
     _menuBar->addMenu(mainMenu);
@@ -208,4 +210,30 @@ void mainWindow::sendAllDumpRequest(){
         sendSingleDumpRequest();
     }
 
+}
+
+void mainWindow::sendSingleDump(){
+    std::vector<unsigned char> rawRequest;
+    rawRequest = _prefixPocketC;
+    rawRequest.push_back(0x20);
+    rawRequest.push_back(_presetsList->currentRow());
+    rawRequest.push_back(0x00);
+
+    for(int i=0; i<3; i++){
+        for(int j=0; j<16; j++){
+            int value = _presetSettingsTable->item(j,i)->text().toInt();
+            rawRequest.push_back(value);
+        }
+    }
+
+    rawRequest.push_back(0xF7);
+    if(_midiOut->isPortOpen()) _midiOut->sendRawMessage(rawRequest);
+
+    std::vector<unsigned char> storeRequest;
+    storeRequest = _prefixPocketC;
+    storeRequest.push_back(0x30);
+    storeRequest.push_back(_presetsList->currentRow());
+    storeRequest.push_back(0x00);
+    storeRequest.push_back(0xF7);
+    if(_midiOut->isPortOpen()) _midiOut->sendRawMessage(storeRequest);
 }
