@@ -4,6 +4,8 @@
 #include <QPushButton>
 #include <vector>
 #include <QDebug>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 
 mainWindow::mainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -18,9 +20,10 @@ mainWindow::mainWindow(QWidget *parent) :
     _prefixPocketC =  {0xF0,0x00,0x20,0x20,0x14,0x00};
     _midiIn->setIgnoreTypes(false, false, false);
 
+    // Temporary default starting values (all parameters set to zero)
     for(int i=0; i<128; i++){
         for(int j=0; j<48; j++){
-            _preset[i][j] = i+j;
+            _preset[i][j] = 0;
         }
     }
 
@@ -55,7 +58,6 @@ mainWindow::mainWindow(QWidget *parent) :
     mainLayout->addWidget(getPresetButton);
     connect(getPresetButton, SIGNAL(clicked(bool)),this,SLOT(sendSingleDumpRequest()));
 
-
     // Table
     for(int i=0; i<128; i++){
         QString defaultCelString = QString("Preset #%1").arg(i+1);
@@ -65,7 +67,7 @@ mainWindow::mainWindow(QWidget *parent) :
     connect(_presetsList,SIGNAL(itemSelectionChanged()),this,SLOT(updateTable()));
 
     QStringList settingsList;
-    settingsList << "Channel" << "Description"<< "Type" << "Parameter";
+    settingsList << "Channel" << "Type" << "Parameter" << "Description" ;
     _presetSettingsTable->setRowCount(16);
     _presetSettingsTable->setColumnCount(4);
     _presetSettingsTable->setHorizontalHeaderLabels(settingsList);
