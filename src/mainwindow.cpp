@@ -17,6 +17,7 @@ mainWindow::mainWindow(QWidget *parent) :
     _midiIn(new QMidiIn(this)),
     _midiOut(new QMidiOut(this))
 {
+    this->setFixedSize(1024,768);
     _prefixPocketC =  {0xF0,0x00,0x20,0x20,0x14,0x00};
     _midiIn->setIgnoreTypes(false, false, false);
 
@@ -87,6 +88,7 @@ mainWindow::mainWindow(QWidget *parent) :
     connect(_midiIn, SIGNAL(midiMessageReceived(QMidiMessage*)), this, SLOT(onMidiMessageReceive(QMidiMessage*)));
     connect(settings, SIGNAL(triggered(bool)), this, SLOT(openSettingsWindow()));
 
+    _presetsList->setCurrentRow(0);
 }
 
 mainWindow::~mainWindow()
