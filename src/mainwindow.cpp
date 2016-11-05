@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include <vector>
 #include <QDebug>
+#include <QThread>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 
@@ -158,6 +159,7 @@ void mainWindow::updatePreset(QMidiMessage *message)
     for(int i=0; i<48; i++){
         _preset[presetNum][i] = message->getRawMessage().at(9+i);
     }
+    updateTable();
 }
 
 void mainWindow::updateTable()
@@ -210,6 +212,7 @@ void mainWindow::sendAllDumpRequest(){
     for(int i=0; i<_presetsList->count(); i++){
         _presetsList->setCurrentRow(i);
         sendSingleDumpRequest();
+        QThread::msleep(200);
     }
 
 }
