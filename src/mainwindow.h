@@ -8,7 +8,10 @@
 #include <vector>
 #include <bitset>
 
+#include "paramwindow.h"
+#include "eventwindow.h"
 #include "settingswindow.h"
+#include "eventwindow.h"
 #include "qmidimessage.h"
 #include "qmidiin.h"
 #include "qmidiout.h"
@@ -29,7 +32,8 @@ class mainWindow : public QMainWindow
     Q_OBJECT
 public:
     mainWindow(QWidget *parent = 0);
-
+    eventWindow* _eventWindow;
+    paramWindow* _paramWindow;
     settingsWindow* _settingsWindow;
     QListWidget* _presetsList;
     QTableWidget* _presetSettingsTable;
@@ -55,6 +59,7 @@ signals:
 
 public slots:
     void onMidiMessageReceive(QMidiMessage* message);
+    void presetCellClicked(int row, int column);
     void openSettingsWindow();
     void updateDeviceConfig();
     void updatePreset(QMidiMessage* message);

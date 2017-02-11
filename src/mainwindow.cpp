@@ -10,6 +10,8 @@
 
 mainWindow::mainWindow(QWidget *parent) :
     QMainWindow(parent),
+    _eventWindow(new eventWindow(this)),
+    _paramWindow(new paramWindow(this)),
     _settingsWindow(new settingsWindow(this)),
     _presetsList(new QListWidget),
     _presetSettingsTable(new QTableWidget),
@@ -22,10 +24,10 @@ mainWindow::mainWindow(QWidget *parent) :
     _prefixPocketC =  {0xF0,0x00,0x20,0x20,0x14,0x00};
     _midiIn->setIgnoreTypes(false, false, false);
 
-    // Temporary default starting values (all parameters set to zero)
+    // Temporary default starting values
     for(int i=0; i<128; i++){
         for(int j=0; j<48; j++){
-            _preset[i][j] = 0;
+            _preset[i][j] = ((j > 15 && j < 32) ? 127 : 0);
         }
     }
 
@@ -74,6 +76,7 @@ mainWindow::mainWindow(QWidget *parent) :
     settingsList << "Channel" << "Type" << "Parameter" << "Description" ;
     _presetSettingsTable->setRowCount(16);
     _presetSettingsTable->setColumnCount(4);
+    _presetSettingsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     _presetSettingsTable->setHorizontalHeaderLabels(settingsList);
 
 
@@ -87,6 +90,7 @@ mainWindow::mainWindow(QWidget *parent) :
 
 
     connect(_midiIn, SIGNAL(midiMessageReceived(QMidiMessage*)), this, SLOT(onMidiMessageReceive(QMidiMessage*)));
+    connect(_presetSettingsTable, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(presetCellClicked(int,int)));
     connect(settings, SIGNAL(triggered(bool)), this, SLOT(openSettingsWindow()));
 
     _presetsList->setCurrentRow(0);
@@ -127,6 +131,17 @@ void mainWindow::onMidiMessageReceive(QMidiMessage *message)
     }
 
     //qDebug() << "BYTE #7 : " << rawMessage.at(6) ; // DEBUG
+}
+
+void mainWindow::presetCellClicked(int row, int column)
+{
+    _paramWindow->setWindowModality(Qt::ApplicationModal);
+    _paramWindow->setWindowTitle("Parameter");
+
+    _eventWindow->setWindowModality(Qt::ApplicationModal);
+    _eventWindow->setWindowTitle("Event");
+    if(column == 1) _eventWindow->show();
+    if(column == 2) _paramWindow->show();
 }
 
 void mainWindow::openSettingsWindow()
