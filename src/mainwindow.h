@@ -64,6 +64,7 @@ public slots:
     void updateDeviceConfig();
     void updatePreset(QMidiMessage* message);
     void updateTable();
+    void updateEventCell(int row, int col);
 
 private slots:
     void openMidiPorts();

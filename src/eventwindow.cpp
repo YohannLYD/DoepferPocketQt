@@ -16,8 +16,15 @@ eventWindow::eventWindow(QWidget *parent) :
 
     _eventsTable->setRowCount(32);
     _eventsTable->setColumnCount(4);
+    _eventsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    _eventsTable->setSelectionMode(QAbstractItemView::SingleSelection);
+
     _eventsTable->horizontalHeader()->setHidden(true);
+    _eventsTable->horizontalHeader()->setDefaultSectionSize(200);
+
     _eventsTable->verticalHeader()->setHidden(true);
+    _eventsTable->verticalHeader()->setDefaultSectionSize(20);
+
     for(int r=0; r<32; r++){
         for(int c=0; c<4; c++){
             QString nom = _eventsList.at(32*c+r);
@@ -27,11 +34,25 @@ eventWindow::eventWindow(QWidget *parent) :
 
 
     mainLayout->addWidget(_eventsTable);
-
+    mainWidget->setFixedSize(826,666);
     mainWidget->setLayout(mainLayout);
     this->setCentralWidget(mainWidget);
+
+    //connect(_eventsTable,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(updatePreset(int, int)));
+    connect(_eventsTable,SIGNAL(cellDoubleClicked(int,int)),parent,SLOT(updateEventCell(int,int)));
 }
 
 eventWindow::~eventWindow()
 {
+}
+
+void eventWindow::updatePreset(int r, int c)
+{
+    int presetNum = c*32 + r;
+    //emit this->updateMainWindow(_eventsList.at(presetNum));
+    qDebug() << "Event #" << presetNum;
+    qDebug() << "Event name" << _eventsList.at(presetNum);
+
+
+
 }

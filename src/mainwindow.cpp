@@ -79,6 +79,7 @@ mainWindow::mainWindow(QWidget *parent) :
     _presetSettingsTable->setRowCount(16);
     _presetSettingsTable->setColumnCount(4);
     _presetSettingsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    _presetSettingsTable->setSelectionMode(QAbstractItemView::SingleSelection);
     _presetSettingsTable->setHorizontalHeaderLabels(settingsList);
 
     tableLayout->addWidget(_presetsList);
@@ -193,9 +194,22 @@ void mainWindow::updateTable()
     for(int i=0; i<3; i++){
         for(int j=0; j<16; j++){
             QString value = QString::number(_preset[_presetsList->currentRow()][i][j]);
+            if(i==1) value = _eventWindow->_eventsList.at(_preset[_presetsList->currentRow()][i][j]);
             _presetSettingsTable->setItem(j,i,new QTableWidgetItem(value));
         }
     }
+}
+
+void mainWindow::updateEventCell(int r, int c)
+{
+    int eventNum;
+    QString eventName;
+
+    eventNum = 32*c + r;
+    eventName = _eventWindow->_eventsList.at(eventNum);
+    _preset[_presetsList->currentRow()][1][_presetSettingsTable->currentRow()] = eventNum;
+    _presetSettingsTable->setItem(_presetSettingsTable->currentRow(),1,new QTableWidgetItem(eventName));
+   _eventWindow->close();
 }
 
 void mainWindow::openMidiPorts(){

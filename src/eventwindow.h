@@ -18,6 +18,7 @@ public:
 signals:
 
 public slots:
+    void updatePreset(int row, int col);
 };
 
 #endif // EVENTWINDOW_H
