@@ -26,8 +26,10 @@ mainWindow::mainWindow(QWidget *parent) :
 
     // Temporary default starting values
     for(int i=0; i<128; i++){
-        for(int j=0; j<48; j++){
-            _preset[i][j] = ((j > 15 && j < 32) ? 127 : 0);
+        for(int j=0; j<3; j++){
+            for(int k=0; k<16; k++){
+                _preset[i][j][k] = ((j == 1) ? 127 : 0);
+            }
         }
     }
 
@@ -78,7 +80,6 @@ mainWindow::mainWindow(QWidget *parent) :
     _presetSettingsTable->setColumnCount(4);
     _presetSettingsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     _presetSettingsTable->setHorizontalHeaderLabels(settingsList);
-
 
     tableLayout->addWidget(_presetsList);
     tableLayout->addWidget(_presetSettingsTable);
@@ -140,7 +141,14 @@ void mainWindow::presetCellClicked(int row, int column)
 
     _eventWindow->setWindowModality(Qt::ApplicationModal);
     _eventWindow->setWindowTitle("Event");
-    if(column == 1) _eventWindow->show();
+    if(column == 1)
+    {
+        // TODO : Preselect currently used preset
+//        QModelIndex newIndex = _presetSettingsTable->_eventsTable->model()->index(10,3);
+//        _eventWindow->_eventsTable->setCurrentIndex(newIndex);
+//        _eventWindow->_eventsTable->setFocus();
+        _eventWindow->show();
+    }
     if(column == 2) _paramWindow->show();
 }
 
@@ -171,20 +179,21 @@ void mainWindow::updateDeviceConfig()
 void mainWindow::updatePreset(QMidiMessage *message)
 {
     int presetNum = message->getRawMessage().at(7);
-    for(int i=0; i<48; i++){
-        _preset[presetNum][i] = message->getRawMessage().at(9+i);
+    for(int i=0; i<3; i++){
+        for(int j=0; j<16; j++){
+            _preset[presetNum][i][j] = message->getRawMessage().at(9+(i*16+j));
+        }
     }
     updateTable();
 }
 
 void mainWindow::updateTable()
 {
-    // ROWS
-    for(int i=0; i<16; i++){
-        //COLS
-        for(int j=0; j<3; j++){
-            QString value = QString::number(_preset[_presetsList->currentRow()][i+16*j]);
-            _presetSettingsTable->setItem(i,j,new QTableWidgetItem(value));
+
+    for(int i=0; i<3; i++){
+        for(int j=0; j<16; j++){
+            QString value = QString::number(_preset[_presetsList->currentRow()][i][j]);
+            _presetSettingsTable->setItem(j,i,new QTableWidgetItem(value));
         }
     }
 }
@@ -241,7 +250,7 @@ void mainWindow::sendSingleDump(){
 
     for(int i=0; i<3; i++){
         for(int j=0; j<16; j++){
-            int value = _presetSettingsTable->item(j,i)->text().toInt();
+            int value = _preset[_presetsList->currentRow()][i][j];
             rawRequest.push_back(value);
         }
     }

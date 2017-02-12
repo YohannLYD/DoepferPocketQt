@@ -45,7 +45,7 @@ public:
     QMidiMessage* _midiMessage;
     deviceCommandByte _deviceCommandByte;
 
-    unsigned char _preset[128][48];
+    unsigned char _preset[128][3][16];
 
 private:
     QMidiIn *_midiIn;
