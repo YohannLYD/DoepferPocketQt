@@ -38,6 +38,7 @@ public:
     QListWidget* _presetsList;
     QTableWidget* _presetSettingsTable;
     QMenuBar* _menuBar;
+    QList<QSlider*> _presetSlider;
 
     ~mainWindow();
 
@@ -65,6 +66,8 @@ public slots:
     void updatePreset(QMidiMessage* message);
     void updateTable();
     void updateEventCell(int row, int col);
+    void updateSelectedPreset();
+    void updateSliders();
 
 private slots:
     void openMidiPorts();

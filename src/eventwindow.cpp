@@ -3,7 +3,6 @@
 
 eventWindow::eventWindow(QWidget *parent) :
     QMainWindow(parent),
-    //_eventsList(new QStringList),
     _eventsTable(new QTableWidget)
 {
     QWidget *mainWidget = new QWidget(this);
@@ -29,6 +28,12 @@ eventWindow::eventWindow(QWidget *parent) :
         for(int c=0; c<4; c++){
             QString nom = _eventsList.at(32*c+r);
             _eventsTable->setItem(r,c,new QTableWidgetItem(nom));
+            if(nom.isEmpty())
+            {
+                // TO DO SET GREY COLOR TO DISABLED CELLS
+                // _eventsTable->item(r,c)->setBackgroundColor(QColor().black());
+                _eventsTable->item(r,c)->setFlags(Qt::ItemIsEnabled);
+            }
         }
     }
 
@@ -38,7 +43,6 @@ eventWindow::eventWindow(QWidget *parent) :
     mainWidget->setLayout(mainLayout);
     this->setCentralWidget(mainWidget);
 
-    //connect(_eventsTable,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(updatePreset(int, int)));
     connect(_eventsTable,SIGNAL(cellDoubleClicked(int,int)),parent,SLOT(updateEventCell(int,int)));
 }
 
@@ -46,13 +50,3 @@ eventWindow::~eventWindow()
 {
 }
 
-void eventWindow::updatePreset(int r, int c)
-{
-    int presetNum = c*32 + r;
-    //emit this->updateMainWindow(_eventsList.at(presetNum));
-    qDebug() << "Event #" << presetNum;
-    qDebug() << "Event name" << _eventsList.at(presetNum);
-
-
-
-}
