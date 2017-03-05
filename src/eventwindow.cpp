@@ -32,7 +32,7 @@ eventWindow::eventWindow(QWidget *parent) :
             {
                 // TO DO SET GREY COLOR TO DISABLED CELLS
                 // _eventsTable->item(r,c)->setBackgroundColor(QColor().black());
-                _eventsTable->item(r,c)->setFlags(Qt::ItemIsEnabled);
+                _eventsTable->item(r,c)->setFlags(Qt::ItemIsSelectable);
             }
         }
     }
