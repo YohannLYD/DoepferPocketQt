@@ -47,7 +47,12 @@ mainWindow::mainWindow(QWidget *parent) :
 
     // Menu Bar
     QMenu* mainMenu = new QMenu("File", _menuBar);
+    QAction* about = mainMenu->addAction("About");
+    connect(about, SIGNAL(triggered(bool)), this, SLOT(openAboutWindow()));
+    mainMenu->addSeparator();
+
     QAction* settings = mainMenu->addAction("Settings");
+    connect(settings, SIGNAL(triggered(bool)), this, SLOT(openSettingsWindow()));
     mainMenu->addSeparator();
 
     QMenu* get = mainMenu->addMenu("Get");
@@ -122,7 +127,6 @@ mainWindow::mainWindow(QWidget *parent) :
     connect(_midiIn, SIGNAL(midiMessageReceived(QMidiMessage*)), this, SLOT(onMidiMessageReceive(QMidiMessage*)));
     connect(_presetSettingsTable, SIGNAL(customContextMenuRequested(QPoint)),SLOT(channelsMenu(QPoint)));
     connect(_presetSettingsTable, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(presetCellClicked(int,int)));
-    connect(settings, SIGNAL(triggered(bool)), this, SLOT(openSettingsWindow()));
 
     _presetsList->setCurrentRow(0);
 }
@@ -198,6 +202,15 @@ void mainWindow::presetCellClicked(int row, int column)
         _paramWindow->move(0,0);
         _paramWindow->show();
     }
+}
+
+void mainWindow::openAboutWindow()
+{
+    QString aboutText("DoefperPocketQt\n"
+                      "Version 0.1.0\n\n"
+                      "Source code : https://github.com/yohannlyd/DoepferPocketQt\n"
+                      "yohann@dedy.fr\n");
+    QMessageBox::about(this,"DoefperPocketQt",aboutText);
 }
 
 void mainWindow::openSettingsWindow()

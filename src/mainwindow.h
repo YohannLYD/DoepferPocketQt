@@ -61,6 +61,7 @@ signals:
 public slots:
     void onMidiMessageReceive(QMidiMessage* message);
     void presetCellClicked(int row, int column);
+    void openAboutWindow();
     void openSettingsWindow();
     void updateDeviceConfig();
     void updatePreset(QMidiMessage* message);
