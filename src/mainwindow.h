@@ -66,6 +66,7 @@ public slots:
     void updatePreset(QMidiMessage* message);
     void updateTable();
     void updateEventCell(int row, int col);
+    void updateParamCell(int row, int col);
     void updateSelectedPreset();
     void updateSliders();
 

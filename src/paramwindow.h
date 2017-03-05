@@ -3,12 +3,16 @@
 
 #include <QMainWindow>
 #include <QtWidgets>
+#include <QTableWidget>
 
 class paramWindow : public QMainWindow
 {
     Q_OBJECT
 public:
     explicit paramWindow(QWidget *parent = 0);
+    ~paramWindow();
+
+    QTableWidget* _paramNumsTable;
 
 signals:
 

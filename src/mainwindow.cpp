@@ -181,8 +181,16 @@ void mainWindow::presetCellClicked(int row, int column)
 
     if(column == 2)
     {
-        // TODO : CREATE A PARAM WINDOW
-         _paramWindow->show();
+        int presetNum = _presetsList->currentRow();
+        int paramVal = _preset[presetNum][2][row];
+
+        int r = paramVal / 16;
+        int c = paramVal % 16;
+
+        QModelIndex currentParam = _paramWindow->_paramNumsTable->model()->index(r,c);
+        _paramWindow->_paramNumsTable->setCurrentIndex(currentParam);
+        _paramWindow->_paramNumsTable->setFocus();
+        _paramWindow->show();
     }
 }
 
@@ -245,6 +253,18 @@ void mainWindow::updateEventCell(int r, int c)
     _preset[_presetsList->currentRow()][1][_presetSettingsTable->currentRow()] = eventNum;
     _presetSettingsTable->setItem(_presetSettingsTable->currentRow(),1,new QTableWidgetItem(eventName));
    _eventWindow->close();
+}
+
+void mainWindow::updateParamCell(int r, int c)
+{
+    //qDebug() << "r : " << r << "c : " << c;
+    int paramVal;
+    paramVal = 16*r + c;
+    // qDebug() << "paramVal : " << paramVal;
+    _preset[_presetsList->currentRow()][2][_presetSettingsTable->currentRow()] = paramVal;
+    _presetSettingsTable->setItem(_presetSettingsTable->currentRow(),2,new QTableWidgetItem(QString::number(paramVal)));
+    _paramWindow->close();
+
 }
 
 void mainWindow::updateSelectedPreset()
