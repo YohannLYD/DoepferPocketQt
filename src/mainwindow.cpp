@@ -24,14 +24,14 @@ mainWindow::mainWindow(QWidget *parent) :
         _presetSlider.append(new QSlider());
         if(i==7) _presetSlider.at(7)->setDisabled(true);
         connect(_presetSlider.at(i),SIGNAL(valueChanged(int)),this,SLOT(updateSelectedPreset()));
-
     }
 
+    this->setWindowTitle("DoepferPocketQt");
     this->setFixedSize(1024,768);
     _prefixPocketC =  {0xF0,0x00,0x20,0x20,0x14,0x00};
     _midiIn->setIgnoreTypes(false, false, false);
 
-    // Temporary default starting values
+    // Default values
     for(int i=0; i<128; i++){
         for(int j=0; j<3; j++){
             for(int k=0; k<16; k++){
@@ -41,13 +41,11 @@ mainWindow::mainWindow(QWidget *parent) :
     }
 
     // Layout
-
     QWidget *mainWidget = new QWidget(this);
     QVBoxLayout *mainLayout = new QVBoxLayout(mainWidget);
     QSplitter *presetSplitter = new QSplitter(mainWidget);
 
     // Menu Bar
-
     QMenu* mainMenu = new QMenu("File", _menuBar);
     QAction* settings = mainMenu->addAction("Settings");
     mainMenu->addSeparator();
@@ -68,12 +66,16 @@ mainWindow::mainWindow(QWidget *parent) :
     _menuBar->addMenu(mainMenu);
     mainLayout->addWidget(_menuBar);
 
+    // Toolbar
     QHBoxLayout *toolBar = new QHBoxLayout;
 
     QPushButton *getPresetButton = new QPushButton;
     getPresetButton->setText("Get preset");
+    QPushButton *sendPresetButton = new QPushButton;
+    sendPresetButton->setText("Send preset");
 
     connect(getPresetButton, SIGNAL(clicked(bool)),this,SLOT(sendSingleDumpRequest()));
+    connect(sendPresetButton, SIGNAL(clicked(bool)),this,SLOT(sendSingleDump()));
 
     QHBoxLayout *presetPins = new QHBoxLayout;
 
@@ -87,6 +89,7 @@ mainWindow::mainWindow(QWidget *parent) :
     }
 
     toolBar->addWidget(getPresetButton);
+    toolBar->addWidget(sendPresetButton);
     toolBar->addLayout(presetPins);
 
     mainLayout->addLayout(toolBar);
@@ -97,7 +100,6 @@ mainWindow::mainWindow(QWidget *parent) :
         _presetsList->addItem(defaultCelString);
     }
 
-    //connect(_presetsList,SIGNAL(itemSelectionChanged()),this,SLOT(updateTable()));
     connect(_presetsList,SIGNAL(itemSelectionChanged()),this,SLOT(updateSliders()));
 
     QStringList settingsList;
@@ -107,6 +109,7 @@ mainWindow::mainWindow(QWidget *parent) :
     _presetSettingsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     _presetSettingsTable->setSelectionMode(QAbstractItemView::SingleSelection);
     _presetSettingsTable->setHorizontalHeaderLabels(settingsList);
+    _presetSettingsTable->setContextMenuPolicy(Qt::CustomContextMenu);
 
     presetSplitter->addWidget(_presetsList);
     presetSplitter->addWidget(_presetSettingsTable);
@@ -117,6 +120,7 @@ mainWindow::mainWindow(QWidget *parent) :
     setCentralWidget(mainWidget);
 
     connect(_midiIn, SIGNAL(midiMessageReceived(QMidiMessage*)), this, SLOT(onMidiMessageReceive(QMidiMessage*)));
+    connect(_presetSettingsTable, SIGNAL(customContextMenuRequested(QPoint)),SLOT(channelsMenu(QPoint)));
     connect(_presetSettingsTable, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(presetCellClicked(int,int)));
     connect(settings, SIGNAL(triggered(bool)), this, SLOT(openSettingsWindow()));
 
@@ -237,10 +241,19 @@ void mainWindow::updateTable()
         for(int j=0; j<16; j++)
         {
             QString value = QString::number(_preset[_presetsList->currentRow()][i][j]);
+            if(i==0 && value=="0") value = "Master Channel";
             if(i==1) value = _eventWindow->_eventsList.at(_preset[_presetsList->currentRow()][i][j]);
             _presetSettingsTable->setItem(j,i,new QTableWidgetItem(value));
         }
     }
+}
+
+void mainWindow::updateChanCell(int chan)
+{
+    QString chanLabel = chan != 0 ? QString::number(chan) : "Master Channel";
+
+    _preset[_presetsList->currentRow()][0][_presetSettingsTable->currentRow()] = chan;
+    _presetSettingsTable->setItem(_presetSettingsTable->currentRow(),0,new QTableWidgetItem(chanLabel));
 }
 
 void mainWindow::updateEventCell(int r, int c)
@@ -257,10 +270,8 @@ void mainWindow::updateEventCell(int r, int c)
 
 void mainWindow::updateParamCell(int r, int c)
 {
-    //qDebug() << "r : " << r << "c : " << c;
     int paramVal;
     paramVal = 16*r + c;
-    // qDebug() << "paramVal : " << paramVal;
     _preset[_presetsList->currentRow()][2][_presetSettingsTable->currentRow()] = paramVal;
     _presetSettingsTable->setItem(_presetSettingsTable->currentRow(),2,new QTableWidgetItem(QString::number(paramVal)));
     _paramWindow->close();
@@ -286,6 +297,26 @@ void mainWindow::updateSliders()
         _presetSlider.at(i)->setValue(presetNum.test(i));
     }
     updateTable();
+}
+
+void mainWindow::channelsMenu(QPoint pos)
+{
+    if(_presetSettingsTable->currentColumn() != 0) return;
+
+    QMenu *menu=new QMenu(this);
+    QSignalMapper *mapper = new QSignalMapper(this);
+
+    for(int i=0; i<17; i++)
+    {
+        QString chanLabel = i !=0 ? QString::number(i) : "Master Channel";
+        QAction* channelAction = new QAction(chanLabel, this);
+        menu->addAction(channelAction);
+        mapper->setMapping(channelAction,i);
+
+        connect(channelAction, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+    }
+    menu->popup(_presetSettingsTable->viewport()->mapToGlobal(pos));
+    connect(mapper,SIGNAL(mapped(int)),this,SLOT(updateChanCell(int)));
 }
 
 void mainWindow::openMidiPorts()

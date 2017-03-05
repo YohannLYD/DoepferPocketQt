@@ -65,10 +65,12 @@ public slots:
     void updateDeviceConfig();
     void updatePreset(QMidiMessage* message);
     void updateTable();
+    void updateChanCell(int chan);
     void updateEventCell(int row, int col);
     void updateParamCell(int row, int col);
     void updateSelectedPreset();
     void updateSliders();
+    void channelsMenu(QPoint pos);
 
 private slots:
     void openMidiPorts();
