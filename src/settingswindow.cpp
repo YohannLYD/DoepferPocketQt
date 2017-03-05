@@ -44,7 +44,7 @@ settingsWindow::settingsWindow(QWidget *parent) :
 
 
     // THRU MASTER CHANNEL
-    QGroupBox *thruChnBox = new QGroupBox("Thru Settings");
+    QGroupBox *thruChnBox = new QGroupBox("PocketC Settings");
     _channelThruCheckBox->setText("Channel Events Thru (BIT0)");
     _sysexThruCheckBox->setText("Sysex Events Thru (BIT1)");
     _realtimeThruCheckBox->setText("Realtim Events Thru (BIT2)");
@@ -64,6 +64,7 @@ settingsWindow::settingsWindow(QWidget *parent) :
     vbox->addWidget(_channelThruCheckBox);
     vbox->addWidget(_sysexThruCheckBox);
     vbox->addWidget(_realtimeThruCheckBox);
+    vbox->addWidget(new QLabel("Master Channel"));
     vbox->addWidget(_masterChannelSpinBox);
     vbox->addWidget(getConfigButton);
     vbox->addWidget(setConfigButton);
