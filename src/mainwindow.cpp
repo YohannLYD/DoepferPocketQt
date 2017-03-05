@@ -180,6 +180,7 @@ void mainWindow::presetCellClicked(int row, int column)
         QModelIndex currentEvent = _eventWindow->_eventsTable->model()->index(r,c);
         _eventWindow->_eventsTable->setCurrentIndex(currentEvent);
         _eventWindow->_eventsTable->setFocus();
+        _eventWindow->move(0,0);
         _eventWindow->show();
     }
 
@@ -194,6 +195,7 @@ void mainWindow::presetCellClicked(int row, int column)
         QModelIndex currentParam = _paramWindow->_paramNumsTable->model()->index(r,c);
         _paramWindow->_paramNumsTable->setCurrentIndex(currentParam);
         _paramWindow->_paramNumsTable->setFocus();
+        _paramWindow->move(0,0);
         _paramWindow->show();
     }
 }
