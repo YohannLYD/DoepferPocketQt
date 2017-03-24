@@ -208,7 +208,9 @@ void mainWindow::openAboutWindow()
 {
     QString aboutText("DoefperPocketQt\n"
                       "Version 0.1.0\n\n"
-                      "Source code : https://github.com/yohannlyd/DoepferPocketQt\n"
+                      "Source code :\n"
+                      "https://github.com/yohannlyd/DoepferPocketQt\n\n"
+                      "© Yohann Dedy, 2017\n"
                       "yohann@dedy.fr\n");
     QMessageBox::about(this,"DoefperPocketQt",aboutText);
 }
