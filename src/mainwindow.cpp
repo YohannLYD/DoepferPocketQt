@@ -2,6 +2,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QProgressDialog>
 #include <vector>
 #include <QDebug>
 #include <QThread>
@@ -374,15 +375,28 @@ void mainWindow::sendSingleDumpRequest()
     if(_midiOut->isPortOpen()) _midiOut->sendRawMessage(rawRequest);
 }
 
+void mainWindow::sendSingleDumpRequest(int numPreset)
+{
+    std::vector<unsigned char> rawRequest;
+    rawRequest = _prefixPocketC;
+    rawRequest.push_back(0x26);
+    rawRequest.push_back(numPreset);
+    rawRequest.push_back(0x00);
+    rawRequest.push_back(0xF7);
+    if(_midiOut->isPortOpen()) _midiOut->sendRawMessage(rawRequest);
+}
+
 void mainWindow::sendAllDumpRequest()
 {
-    _presetsList->setCurrentRow(0);
+    QProgressDialog progress(this);
+    progress.setRange(0,128);
+    progress.setCancelButton(0);
+    progress.open();
     for(int i=0; i<_presetsList->count(); i++){
-        _presetsList->setCurrentRow(i);
-        sendSingleDumpRequest();
+        sendSingleDumpRequest(i);
+        progress.setValue(i);
         QThread::msleep(200);
     }
-
 }
 
 void mainWindow::sendSingleDump()

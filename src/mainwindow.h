@@ -77,6 +77,7 @@ private slots:
     void openMidiPorts();
     void sendThruMasterChnRequest();
     void sendSingleDumpRequest();
+    void sendSingleDumpRequest(int num);
     void sendAllDumpRequest();
     void sendSingleDump();
 
